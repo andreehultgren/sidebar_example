@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Divider, Stack, Typography } from "@mui/material";
-import MultiSelect from "./MultiSelect";
+import MultiSelect from "../components/MultiSelect";
 
 const sampleItems: string[] = [
   "Ceramic insulator",
@@ -17,7 +17,7 @@ export default function LidarTab({ setActive }: Props) {
 
   useEffect(() => {
     setActive(electricFilter.length > 0);
-  }, [electricFilter]);
+  }, [electricFilter, setActive]);
 
   return (
     <Stack sx={{ px: 2, py: 2, width: 300 }}>

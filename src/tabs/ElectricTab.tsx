@@ -1,43 +1,44 @@
-import React from "react";
 import { Divider, Stack, Typography } from "@mui/material";
+import MultiSelect from "../components/MultiSelect";
 import { useSearchParams } from "react-router-dom";
-import MultiSelect from "./MultiSelect";
 
 const sampleItems: string[] = [
-  "Critical",
-  "Issue",
-  "Should be fixed",
-  "Good to know",
+  "Leaning pole",
+  "Broken pole",
+  "Cracked insulator",
+  "Sagging guy wire",
+  "Tree too close",
 ];
 
-export default function SeverityTab() {
+export default function ElectricTab() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const defectFilter = searchParams.get("severity")?.split(",") || [];
+  const defectFilter = searchParams.get("defects")?.split(",") || [];
 
-  function setSeverityFilter(severities: string[]) {
-    if (severities.length > 0) {
-      searchParams.set("severity", severities.join(","));
+  function setElectricFilter(defects: string[]) {
+    if (defects.length > 0) {
+      searchParams.set("defects", defects.join(","));
       setSearchParams(searchParams);
     } else {
-      searchParams.delete("severity");
+      searchParams.delete("defects");
       setSearchParams(searchParams);
     }
   }
+
   return (
     <Stack sx={{ px: 2, py: 2, width: 300 }}>
       <Typography variant="h5" component="h2">
-        Severity filter
+        Electric defect filter
       </Typography>
       <Typography variant="body1">
-        Filter out issues with your grid by severity level
+        Filter for defects connected with electrical equipment
       </Typography>
       <Divider sx={{ my: 2 }} />
 
       <MultiSelect
-        title="Severities"
+        title="Defects"
         options={sampleItems}
         selectedOptions={defectFilter}
-        setOptions={setSeverityFilter}
+        setOptions={setElectricFilter}
       />
     </Stack>
   );

@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean;
 };
 
-export default function Item({
+export default function TabItem({
   children,
   onClick,
   open,
@@ -24,10 +24,12 @@ export default function Item({
       alignItems="center"
       justifyContent="center"
       sx={{
-        height: "50px",
-        width: "50px",
-        cursor: !!onClick ? "pointer" : "",
-        background: open ? "#EDEDED" : "white",
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        height: "40px",
+        flex: 1,
+        cursor: onClick ? "pointer" : "",
+        background: open ? "#ffffff" : "#f6f6f6",
         position: "relative",
         color: disabled ? "#BDBDBD" : "#404040",
       }}

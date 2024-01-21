@@ -1,23 +1,25 @@
 import React, { useEffect } from "react";
-import { Box, Collapse } from "@mui/material";
-import Item from "./Item";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import TabItem from "./components/TabItem";
 import {
   AccessTime,
   ElectricBolt,
   Forest,
-  Grade,
   Inventory,
-  Restore,
-  ThreeDRotation,
+  Pause,
+  PlayArrow,
+  Save,
+  Stop,
   Warning,
 } from "@mui/icons-material";
-import SeverityTab from "./SeverityTab";
-import VegetationTab from "./VegetationTab";
-import ElectricTab from "./ElectricTab";
-import TimeTab from "./TimeTab";
-import SavedFilters from "./SavedFilters";
-import InventoryTab from "./InventoryTab";
-import LidarTab from "./LidarTab";
+import {
+  SeverityTab,
+  VegetationTab,
+  ElectricTab,
+  TimeTab,
+  SavedFilters,
+  InventoryTab,
+} from "./tabs";
 import { useSearchParams } from "react-router-dom";
 
 type Props = {
@@ -28,7 +30,7 @@ type Props = {
 export default function FilterSidebar({ open, setActive }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTab, setSelectedTab] =
-    React.useState<keyof typeof componentMap>(0);
+    React.useState<keyof typeof componentMap>(1);
 
   const [secondMenuOpen, setSecondMenuOpen] = React.useState(false);
   useEffect(() => {
@@ -42,29 +44,45 @@ export default function FilterSidebar({ open, setActive }: Props) {
   const vegetationActive = searchParams.has("vegetation");
   const timeActive = searchParams.has("time");
   const inventoryActive = searchParams.has("inventory");
+  const filterEnabled =
+    searchParams.has("filterActive") &&
+    searchParams.get("filterActive") === "true";
 
   const [savedFiltersActive, setSavedFiltersActive] = React.useState(false);
 
+  function enableFilter() {
+    searchParams.set("filterActive", "true");
+    setSearchParams(searchParams);
+  }
+
+  function disableFilter() {
+    searchParams.set("filterActive", "false");
+    searchParams.delete("filterActive");
+    setSearchParams(searchParams);
+  }
+
+  function clearFilter() {
+    searchParams.delete("defects");
+    searchParams.delete("severity");
+    searchParams.delete("vegetation");
+    searchParams.delete("time");
+    searchParams.delete("inventory");
+    searchParams.delete("filterActive");
+    setSearchParams(searchParams);
+  }
+
+  const anyFilterActive =
+    severityActive ||
+    vegetationActive ||
+    electricActive ||
+    timeActive ||
+    inventoryActive ||
+    savedFiltersActive;
   useEffect(() => {
-    setActive(
-      severityActive ||
-        vegetationActive ||
-        electricActive ||
-        timeActive ||
-        inventoryActive ||
-        savedFiltersActive
-    );
-  }, [
-    severityActive,
-    vegetationActive,
-    electricActive,
-    timeActive,
-    inventoryActive,
-    savedFiltersActive,
-  ]);
+    setActive(filterEnabled && anyFilterActive);
+  }, [filterEnabled, anyFilterActive, setActive]);
 
   const componentMap = {
-    0: null,
     1: <SeverityTab />,
     2: <VegetationTab />,
     3: <ElectricTab />,
@@ -75,149 +93,131 @@ export default function FilterSidebar({ open, setActive }: Props) {
 
   const Component = componentMap[selectedTab];
 
-  const anyFilterActive =
-    severityActive ||
-    vegetationActive ||
-    electricActive ||
-    timeActive ||
-    inventoryActive ||
-    savedFiltersActive;
-
   return (
     <>
-      <Collapse in={open} orientation="horizontal">
-        <Box
-          sx={{
-            width: "50px",
-            height: "100vh",
-            background: "white",
-            display: open ? "block" : "none",
-          }}
+      <Box
+        sx={{
+          width: 400,
+          height: "100vh",
+          background: "#EDEDED",
+          position: "relative",
+        }}
+      >
+        <Stack alignItems="center" justifyContent="center" px={2} pt={1}>
+          <Typography component="h2" variant="h6">
+            Filters
+          </Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ background: "#EDEDED" }}
         >
-          <Item
-            disabled={!anyFilterActive}
-            onClick={() => {
-              searchParams.has("defects") && searchParams.delete("defects");
-              searchParams.has("severity") && searchParams.delete("severity");
-              searchParams.has("vegetation") &&
-                searchParams.delete("vegetation");
-              searchParams.has("time") && searchParams.delete("time");
-              searchParams.has("inventory") && searchParams.delete("inventory");
-              setSearchParams(searchParams);
-            }}
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            px={1}
+            maxWidth={200}
+            flex={1}
           >
-            <Restore />
-          </Item>
-          <Item
+            <IconButton
+              sx={{ color: "red" }}
+              disabled={!anyFilterActive && !filterEnabled}
+              onClick={() => {
+                clearFilter();
+              }}
+            >
+              <Stop />
+            </IconButton>
+            <IconButton
+              sx={{ color: "orange" }}
+              disabled={!filterEnabled}
+              onClick={() => {
+                disableFilter();
+              }}
+            >
+              <Pause />
+            </IconButton>
+
+            <IconButton
+              sx={{ color: "green" }}
+              disabled={!(anyFilterActive && !filterEnabled)}
+              onClick={() => {
+                enableFilter();
+              }}
+            >
+              <PlayArrow />
+            </IconButton>
+          </Stack>
+        </Stack>
+        <Stack
+          px={1}
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={0.2}
+        >
+          <TabItem
             active={severityActive}
             onClick={() => {
-              if (selectedTab === 1) {
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(1);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(1);
-              }
+              setSelectedTab(1);
             }}
             open={selectedTab === 1}
           >
             <Warning />
-          </Item>
-          <Item
+          </TabItem>
+          <TabItem
             active={vegetationActive}
             onClick={() => {
-              if (selectedTab === 2) {
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(2);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(2);
-              }
+              setSelectedTab(2);
             }}
             open={selectedTab === 2}
           >
             <Forest />
-          </Item>
-          <Item
+          </TabItem>
+          <TabItem
             active={electricActive}
             onClick={() => {
-              if (selectedTab === 3) {
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(3);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(3);
-              }
+              setSelectedTab(3);
             }}
             open={selectedTab === 3}
           >
             <ElectricBolt />
-          </Item>
-          <Item
+          </TabItem>
+          <TabItem
             active={inventoryActive}
             onClick={() => {
-              if (selectedTab === 4) {
-                setSelectedTab(4);
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(4);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(4);
-              }
+              setSelectedTab(4);
             }}
             open={selectedTab === 4}
           >
             <Inventory />
-          </Item>
-          <Item
+          </TabItem>
+          <TabItem
             active={timeActive}
             onClick={() => {
-              if (selectedTab === 5) {
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(5);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(5);
-              }
+              setSelectedTab(5);
             }}
             open={selectedTab === 5}
           >
             <AccessTime />
-          </Item>
-          <Item
+          </TabItem>
+          <TabItem
             active={savedFiltersActive}
             onClick={() => {
-              if (selectedTab === 7) {
-                setSecondMenuOpen(false);
-              } else if (selectedTab === 0) {
-                setSelectedTab(7);
-                setSecondMenuOpen(true);
-              } else {
-                setSelectedTab(7);
-              }
+              setSelectedTab(7);
             }}
             open={selectedTab === 7}
           >
-            <Grade />
-          </Item>
+            <Save />
+          </TabItem>
+        </Stack>
+        <Box sx={{ mx: 1, height: 200, background: "#FFFFFF" }}>
+          {Component}
         </Box>
-      </Collapse>
-      <Collapse
-        in={secondMenuOpen}
-        orientation="horizontal"
-        onTransitionEnd={(e) => {
-          if (!secondMenuOpen) {
-            setSelectedTab(0);
-          }
-        }}
-      >
-        <Box sx={{ height: "100vh", background: "#EDEDED" }}>{Component}</Box>
-      </Collapse>
+      </Box>
     </>
   );
 }

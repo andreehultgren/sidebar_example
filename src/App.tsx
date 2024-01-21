@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
 import Sidebar from "./Sidebar";
-import FilterSidebar from "./FilterSidebar";
 
 function App() {
   const [filterOpen, setFilterOpen] = React.useState(false);

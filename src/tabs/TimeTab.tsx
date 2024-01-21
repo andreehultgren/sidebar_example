@@ -1,7 +1,6 @@
-import React from "react";
 import { Divider, Stack, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import MultiSelect from "./MultiSelect";
+import MultiSelect from "../components/MultiSelect";
 
 const sampleItems: string[] = [
   "1 day",

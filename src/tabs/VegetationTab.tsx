@@ -1,12 +1,15 @@
-import React from "react";
 import { Divider, Stack, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import MultiSelect from "./MultiSelect";
+import MultiSelect from "../components/MultiSelect";
 
-const sampleItems: string[] = ["Poles", "Transformers", "Insulators", "Wires"];
+const sampleItems: string[] = [
+  "Ground clearance",
+  "Tree clearance",
+  "Building clearance",
+];
 
-export default function InventoryTab() {
-  const key = "inventory";
+export default function VegetationTab() {
+  const key = "vegetation";
   const [searchParams, setSearchParams] = useSearchParams();
   const valueFilter = searchParams.get(key)?.split(",") || [];
 
@@ -22,15 +25,15 @@ export default function InventoryTab() {
   return (
     <Stack sx={{ px: 2, py: 2, width: 300 }}>
       <Typography variant="h5" component="h2">
-        Inventory filter
+        Vegetation filter
       </Typography>
       <Typography variant="body1">
-        Find where your assets are located
+        Find issues with vegetation, building and clearance.
       </Typography>
       <Divider sx={{ my: 2 }} />
 
       <MultiSelect
-        title="Inventory items"
+        title="Vegetation rules"
         options={sampleItems}
         selectedOptions={valueFilter}
         setOptions={setFilter}

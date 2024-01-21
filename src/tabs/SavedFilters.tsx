@@ -1,10 +1,7 @@
-import React from "react";
-import { Card, Divider, Stack, Typography } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
-type Props = {};
-
-export default function SavedFilters({}: Props) {
+export default function SavedFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   function resetFilters() {
     searchParams.has("defects") && searchParams.delete("defects");
@@ -29,14 +26,8 @@ export default function SavedFilters({}: Props) {
     !searchParams.get("inventory");
 
   return (
-    <Stack sx={{ px: 2, py: 2, width: 300 }}>
-      <Typography variant="h5" component="h2">
-        Saved Filters
-      </Typography>
-      <Typography variant="body1">
-        Save and re-use your favorite filters
-      </Typography>
-      <Divider sx={{ my: 2 }} />
+    <Stack p={1}>
+      <Typography fontWeight={700}>Saved Filters</Typography>
       <Stack spacing={1}>
         <Card
           onClick={() => {

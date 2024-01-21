@@ -1,6 +1,6 @@
 import React from "react";
-import { Box } from "@mui/material";
-import Item from "./Item";
+import { Box, Collapse } from "@mui/material";
+import Item from "./components/Item";
 import {
   AirplanemodeActive,
   Dashboard,
@@ -48,7 +48,9 @@ export default function Sidebar({ onFilterOpen, open }: Props) {
           <Settings />
         </Item>
       </Box>
-      <FilterSidebar setActive={setActive} open={open} />
+      <Collapse in={open} orientation="horizontal">
+        <FilterSidebar setActive={setActive} open={open} />
+      </Collapse>
     </>
   );
 }
